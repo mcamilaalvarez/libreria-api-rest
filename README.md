@@ -15,7 +15,6 @@ Este proyecto es una API REST desarrollada en Java para la gestión de una libre
 * Gestión de Libros:
     * Creación de nuevos libros.
     * Obtención de la lista de todos los libros.
-    * Obtención de un libro por su ID.
     * Actualización de la información de un libro.
 * Gestión de Autores:
     * Creación de nuevos autores.
@@ -90,7 +89,7 @@ La aplicación estará disponible en `http://localhost:8080`.
 ### Obtener todos los libros
 
 ```bash
-curl http://localhost:8080/libro/listar
+http://localhost:8080/libro/listar
 ```
 ## Contribución
 
