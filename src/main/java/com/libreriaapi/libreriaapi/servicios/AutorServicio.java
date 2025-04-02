@@ -2,6 +2,7 @@ package com.libreriaapi.libreriaapi.servicios;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +37,14 @@ public class AutorServicio {
             Autor autor = respuesta.get();
             autor.setNombreAutor(nombre);
             autorRepositorio.save(autor);
+        } else {
+            throw new NoSuchElementException("No se encontró el autor con ID :" + id);
         }
     }
 
-     // Metodo para dar de baja un autor
+     // Metodo para desactivar un autor
      @Transactional
-     public void bajaAutor(String id) {
+     public void desactivarAutor(String id) {
          Optional<Autor> respuesta = autorRepositorio.findById(id);
          if (respuesta.isPresent()) { // Si encuentra el objeto por id
              Autor autor = respuesta.get();
