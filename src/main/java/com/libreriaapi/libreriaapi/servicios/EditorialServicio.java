@@ -11,7 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.libreriaapi.libreriaapi.entidades.Autor;
 import com.libreriaapi.libreriaapi.entidades.Editorial;
+import com.libreriaapi.libreriaapi.modelos.EditorialDTO;
 import com.libreriaapi.libreriaapi.repositorios.EditorialRepositorio;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class EditorialServicio {
@@ -75,4 +78,33 @@ public class EditorialServicio {
             throw new NoSuchElementException("No se encontró la editorial con el ID: " + id);
         }
      }
+
+
+    @Transactional(readOnly = true)
+    public Editorial getOne(String id) {
+        return editorialRepositorio.getReferenceById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public EditorialDTO obtenerEditorialDTO(String id) {
+        Optional<Editorial> optionalEditorial = editorialRepositorio.findById(id);
+        Editorial editorial = null;
+        try {
+            // Verificamos si el valor está presente en el Optional
+            if (optionalEditorial.isPresent()) {
+                editorial = optionalEditorial.get();
+            } else {
+                throw new EntityNotFoundException("No se encontró la editorial con ID: " + id);
+            }
+        } catch (EntityNotFoundException e) {
+            // Manejo de la excepción en caso de que no se encuentre la entidad
+            throw e; // Lanzamos la excepción personalizada
+        }
+       
+        // Mapear la entidad a DTO
+        return new EditorialDTO(editorial.getId(), editorial.getNombreEditorial(), editorial.isEditorialActiva());
+    }
+
+
+
 }

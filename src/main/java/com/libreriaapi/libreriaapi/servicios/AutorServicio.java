@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.libreriaapi.libreriaapi.entidades.Autor;
+import com.libreriaapi.libreriaapi.modelos.AutorDTO;
 import com.libreriaapi.libreriaapi.repositorios.AutorRepositorio;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class AutorServicio {
@@ -66,4 +69,22 @@ public class AutorServicio {
         autores = autorRepositorio.findAll();
         return autores;
     }
+
+    @Transactional(readOnly = true)
+    public AutorDTO obteneAutorDTO(String id){
+        Optional<Autor> optionalAutor = autorRepositorio.findById(id);
+        Autor autor = null;
+        try {
+            if(optionalAutor.isPresent()){
+                autor = optionalAutor.get();
+            } else{
+                throw new EntityNotFoundException("No se pudo encontrar un autor con el id " + id);
+            }
+        } catch (EntityNotFoundException e) {
+            throw e;
+        }
+
+        return new AutorDTO(autor.getId(),autor.getNombreAutor(), autor.isAutorActivo());
+    }
+
 }

@@ -4,16 +4,21 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.libreriaapi.libreriaapi.entidades.Autor;
+import com.libreriaapi.libreriaapi.modelos.AutorDTO;
 import com.libreriaapi.libreriaapi.servicios.AutorServicio;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/autor")
@@ -48,6 +53,18 @@ public class AutorControlador {
             autorServicio.modificarAutor(nombre, id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/listarAutor/{id}")
+    public ResponseEntity<AutorDTO> listarAutor(@PathVariable String id){
+        try {
+            AutorDTO autorDTO = autorServicio.obteneAutorDTO(id);
+            return ResponseEntity.ok(autorDTO);
+        }  catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
